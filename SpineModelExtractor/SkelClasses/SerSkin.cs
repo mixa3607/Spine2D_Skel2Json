@@ -2,10 +2,10 @@
 
 namespace SpineModelExtractor.SkelClasses
 {
-    public class SerSkins : ContainName //skins
-    {
-        public SerSkin[] Skins { get; set; }
-    }
+    //public class SerSkins : ContainName //skins
+    //{
+    //    public SerSkin[] Skins { get; set; }
+    //}
 
     public class SerSkin : ContainName //default
     {
@@ -18,8 +18,8 @@ namespace SpineModelExtractor.SkelClasses
     }
 
 
-    public class SerSkinSlotAttachments : ContainName
-    {
-        public SerAttachment[] Slots { get; set; }
-    }
+    //public class SerSkinSlotAttachments : ContainName
+    //{
+    //    public SerAttachment[] Slots { get; set; }
+    //}
 }

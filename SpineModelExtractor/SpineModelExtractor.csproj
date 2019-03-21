@@ -46,18 +46,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdditionalClasses\SerAnimationBones.cs" />
-    <Compile Include="AdditionalClasses\SerAnimationDeforms.cs" />
-    <Compile Include="AdditionalClasses\SerAnimationSlots.cs" />
+    <Compile Include="AdditionalClasses\SerAnimationBone.cs" />
+    <Compile Include="AdditionalClasses\SerAnimationDeform.cs" />
+    <Compile Include="AdditionalClasses\SerAnimationSlot.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AdditionalClasses\SerAttachments.cs" />
+    <Compile Include="AdditionalClasses\SerAttachment.cs" />
     <Compile Include="SkelClasses\SerAnimation.cs" />
-    <Compile Include="SkelClasses\SerBones.cs" />
-    <Compile Include="SkelClasses\SerSkins.cs" />
+    <Compile Include="SkelClasses\SerBone.cs" />
+    <Compile Include="SkelClasses\SerSkin.cs" />
     <Compile Include="SkelClasses\SerSkeleton.cs" />
-    <Compile Include="SkelClasses\SerSlots.cs" />
+    <Compile Include="SkelClasses\SerSlot.cs" />
     <Compile Include="SkelSerializer.cs" />
   </ItemGroup>
   <ItemGroup>

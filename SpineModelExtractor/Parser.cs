@@ -186,7 +186,26 @@ namespace SpineModelExtractor
             return serAttachments;
         }
 
-        public SerSkinSlot[] GetSkinSlots(Dictionary<Skin.AttachmentKeyTuple, Attachment> attachments)
+
+        #region skins
+
+        public SerSkin[] GetSkins()
+        {
+            var serSkins = new SerSkin[skeletonData.Skins.Count];
+            for (int i = 0; i < skeletonData.Skins.Count; i++)
+            {
+                serSkins[i] = new SerSkin()
+                {
+                    Name = skeletonData.Skins.Items[i].Name,
+                    Slots = GetSkinSlots(skeletonData.Skins.Items[i].Attachments)
+                };
+            }
+
+            return serSkins;
+        }
+
+        //helper method for GetSkins
+        private SerSkinSlot[] GetSkinSlots(Dictionary<Skin.AttachmentKeyTuple, Attachment> attachments)
         {
             var serAttachments = GetAttachments(attachments);
 
@@ -203,20 +222,8 @@ namespace SpineModelExtractor
             return serSkinSlots;
         }
 
-        public SerSkin[] GetSkins()
-        {
-            var serSkins = new SerSkin[skeletonData.Skins.Count];
-            for (int i = 0; i < skeletonData.Skins.Count; i++)
-            {
-                serSkins[i] = new SerSkin()
-                {
-                    Name = skeletonData.Skins.Items[i].Name,
-                    Slots = GetSkinSlots(skeletonData.Skins.Items[i].Attachments)
-                };
-            }
-            
-            return serSkins;
-        }
+        #endregion
+
 
         public SerAnimation[] GetAnimations()
         {
@@ -224,20 +231,24 @@ namespace SpineModelExtractor
             var serAnimations = new List<SerAnimation>();
             foreach (var spineAnimation in spineAnimations)
             {
+                //for slots *need optimization
                 var slotsList = new List<SerAnimationSlot>();
                 var slotAttachmentsDict = new Dictionary<int, List<SerAnimSlotAttachment>>();
                 var slotColorDict = new Dictionary<int, List<SerAnimSlotColor>>();
                 var slotTwoColorDict = new Dictionary<int, List<SerAnimSlotTwoColor>>();
 
+                //for bones *need optimization
                 var bonesList = new List<SerAnimationBone>();
                 var boneRotateDict = new Dictionary<int, SerAnimBoneRotate>();
                 var boneScaleDict = new Dictionary<int, SerAnimBoneScale>();
                 var boneShearDict = new Dictionary<int, SerAnimBoneShear>();
                 var boneTranslateDict = new Dictionary<int, SerAnimBoneTranslate>();
 
+                //for deforms *need optimization
                 var deformList = new List<SerAnimationDeform>();
-                //                              slot            attachment        frames
                 var deformsDict = new Dictionary<int, List<SerAnimDeformSlot>>();
+
+                //for IKs *need optimization
 
                 foreach (var animationTimeline in spineAnimation.Timelines)
                 {
@@ -360,6 +371,8 @@ namespace SpineModelExtractor
                     //transforms
 
                     //paths
+
+                    //events
                 }
 
 

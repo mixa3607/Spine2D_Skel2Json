@@ -3,11 +3,11 @@ using Newtonsoft.Json;
 
 namespace SpineModelExtractor.SkelClasses
 {
-    class SerBones
-    {
-        [JsonProperty("bones")]
-        public SerBone[] Bones { get; set; }
-    }
+    //class SerBones
+    //{
+    //    [JsonProperty("bones")]
+    //    public SerBone[] Bones { get; set; }
+    //}
     public class SerBone
     {
         [JsonProperty("name")]
