@@ -829,6 +829,7 @@ namespace Spine {
 			switch (input.ReadByte()) {
 			case CURVE_STEPPED:
 				timeline.SetStepped(frameIndex);
+                //timeline.IsStepped.Add(frameIndex, true); ///###
 				break;
 			case CURVE_BEZIER:
 				timeline.SetCurve(frameIndex, ReadFloat(input), ReadFloat(input), ReadFloat(input), ReadFloat(input));

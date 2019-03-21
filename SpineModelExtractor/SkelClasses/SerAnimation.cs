@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel;
+using Newtonsoft.Json;
 using SpineModelExtractor.AdditionalClasses;
 
 namespace SpineModelExtractor.SkelClasses
@@ -37,6 +38,7 @@ namespace SpineModelExtractor.SkelClasses
     public class SerTimeLineMember
     {
         [JsonProperty("time")]
+        [DefaultValue(null)]
         public float Time { get; set; }
     }
 }

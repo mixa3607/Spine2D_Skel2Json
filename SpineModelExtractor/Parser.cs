@@ -226,10 +226,10 @@ namespace SpineModelExtractor
                 var slotTwoColorDict = new Dictionary<int, List<SerAnimSlotTwoColor>>();
 
                 var bonesList = new List<SerAnimationBone>();
-                var boneRotateDict = new Dictionary<int, List<SerAnimBoneRotate>>();
-                var boneScaleDict = new Dictionary<int, List<SerAnimBoneScale>>();
-                var boneShearDict = new Dictionary<int, List<SerAnimBoneShear>>();
-                var boneTranslateDict = new Dictionary<int, List<SerAnimBoneTranslate>>();
+                var boneRotateDict = new Dictionary<int, SerAnimBoneRotate>();
+                var boneScaleDict = new Dictionary<int, SerAnimBoneScale>();
+                var boneShearDict = new Dictionary<int, SerAnimBoneShear>();
+                var boneTranslateDict = new Dictionary<int, SerAnimBoneTranslate>();
 
                 var deformList = new List<SerAnimationDeform>();
                 //                              slot            attachment        frames
@@ -285,35 +285,31 @@ namespace SpineModelExtractor
                             {
                                 Time = spineRotate.Frames[2 * i + 0],
                                 Angle = spineRotate.Frames[2 * i + 1],
-                                Curve = null
+                                Curve = spineRotate.RawCurve.Where(s => s.Key == i)
+                                .Select(s => s.Value)
+                                .FirstOrDefault(),
+                                IsStepped = spineRotate.IsStepped
+                                    .Where(s => s.Key == i)
+                                    .Select(s => s.Value)
+                                    .FirstOrDefault()
                             };
-
-                            frames[i].Curve = spineRotate.RawCurve
-                                .Where(s => s.Key == spineRotate.BoneIndex)
-                                .Select(s => s.Value)
-                                .FirstOrDefault();
-
-                            frames[i].IsStepped = spineRotate.IsStepped
-                                .Where(s => s.Key == spineRotate.BoneIndex)
-                                .Select(s => s.Value)
-                                .FirstOrDefault();
                         }
-                        AddOrInsert(boneRotateDict, new SerAnimBoneRotate(){Frames = frames}, spineRotate.BoneIndex);
+                        boneRotateDict.Add(spineRotate.BoneIndex, new SerAnimBoneRotate() { Frames = frames });
                     }
                     else if (animationTimeline is ScaleTimeline spineScale)
                     {
                         var boneScale = GetAnimBoneFrames<SerAnimBoneScale>(spineScale);
-                        AddOrInsert(boneScaleDict, boneScale, spineScale.BoneIndex);
+                        boneScaleDict.Add(spineScale.BoneIndex, boneScale);
                     }
                     else if (animationTimeline is ShearTimeline spineShear)
                     {
                         var boneShear = GetAnimBoneFrames<SerAnimBoneShear>(spineShear);
-                        AddOrInsert(boneShearDict, boneShear, spineShear.BoneIndex);
+                        boneShearDict.Add(spineShear.BoneIndex, boneShear);
                     }
                     else if (animationTimeline is TranslateTimeline spineTranslate)
                     {
                         var boneTranslate = GetAnimBoneFrames<SerAnimBoneTranslate>(spineTranslate);
-                        AddOrInsert(boneTranslateDict, boneTranslate, spineTranslate.BoneIndex);
+                        boneTranslateDict.Add(spineTranslate.BoneIndex, boneTranslate);
                     }
                     //deforms
                     else if (animationTimeline is DeformTimeline spineDeform)
@@ -384,13 +380,13 @@ namespace SpineModelExtractor
                 {
                     var currentAnimationBone = new SerAnimationBone()
                     {
-                        Rotates = GetArrElemsById(boneRotateDict, i),
-                        Scales = GetArrElemsById(boneScaleDict, i),
-                        Shears = GetArrElemsById(boneShearDict, i),
-                        Translates = GetArrElemsById(boneTranslateDict, i),
+                        Rotate = GetElemById(boneRotateDict, i),
+                        Scale = GetElemById(boneScaleDict, i),
+                        Shear = GetElemById(boneShearDict, i),
+                        Translate = GetElemById(boneTranslateDict, i),
                         Name = skeletonData.Bones.Items[i].Name
                     };
-                    if (currentAnimationBone.Rotates != null || currentAnimationBone.Scales != null || currentAnimationBone.Shears != null || currentAnimationBone.Translates != null)
+                    if (currentAnimationBone.Rotate != null || currentAnimationBone.Scale != null || currentAnimationBone.Shear != null || currentAnimationBone.Translate != null)
                     {
                         bonesList.Add(currentAnimationBone);
                     }
@@ -420,6 +416,11 @@ namespace SpineModelExtractor
             return serAnimations.ToArray();
         }
 
+        private static T GetElemById<T>(Dictionary<int, T> dictionary, int index)
+        {
+            return dictionary.Where(s => s.Key == index).Select(s => s.Value).FirstOrDefault();
+        }
+
         private static T[] GetArrElemsById<T>(Dictionary<int, List<T>> dictionary, int index)
         {
             return dictionary.Where(s => s.Key == index).Select(s => s.Value).FirstOrDefault()?.ToArray();
@@ -436,11 +437,11 @@ namespace SpineModelExtractor
                     X = spineTranslate.Frames[3 * i + 1],
                     Y = spineTranslate.Frames[3 * i + 2],
                     Curve = spineTranslate.RawCurve
-                        .Where(s => s.Key == spineTranslate.BoneIndex)
+                        .Where(s => s.Key == i)
                         .Select(s => s.Value)
                         .FirstOrDefault(),
                     IsStepped = spineTranslate.IsStepped
-                        .Where(s => s.Key == spineTranslate.BoneIndex)
+                        .Where(s => s.Key == i)
                         .Select(s => s.Value)
                         .FirstOrDefault()
                 };

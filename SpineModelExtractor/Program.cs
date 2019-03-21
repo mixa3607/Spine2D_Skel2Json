@@ -14,6 +14,14 @@ namespace SpineModelExtractor
     {
         static void Main(string[] args)
         {
+            object ts = "sdsds";
+            ts = (int)10;
+            var jsonObj = new JProperty("test", ts);
+
+
+            Console.WriteLine(jsonObj.ToString());
+
+
             bool isJsonLoad = false;
             SkeletonData skeletonData = null;
 
@@ -42,13 +50,7 @@ namespace SpineModelExtractor
             var serSkins = parser.GetSkins();
             //var json = JsonConvert.SerializeObject(SkelSerializer.SerializeSkins(serSkins), Formatting.Indented, new JsonSerializerSettings() {DefaultValueHandling = DefaultValueHandling.Ignore});
             SkelSerializer.SerializeSlots(serSlots).ToString();
-            var jsonObj = new JProperty("test", JObject.FromObject(new Dictionary<string, string>
-            {
-                { "123", "123"}
-            }));
             
-
-            Console.WriteLine(jsonObj.ToString());
         }
 
         

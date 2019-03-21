@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -11,7 +12,7 @@ namespace SpineModelExtractor
 {
     class SkelSerializer
     {
-        private static readonly JsonSerializer DefaultIgnoreSerializer = JsonSerializer.Create(new JsonSerializerSettings() {DefaultValueHandling = DefaultValueHandling.Ignore});
+        private static readonly JsonSerializer DefaultSerializer = JsonSerializer.Create(new JsonSerializerSettings() {DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         
 
         public static JToken Serialize(object serObject, string propName)
@@ -71,7 +72,7 @@ namespace SpineModelExtractor
             var root = new JArray();
             foreach (var serSlot in serSlots)
             {
-                root.Add(JObject.FromObject(serSlot, DefaultIgnoreSerializer));
+                root.Add(JObject.FromObject(serSlot, DefaultSerializer));
             }
             return root;
         }
@@ -81,7 +82,7 @@ namespace SpineModelExtractor
             var root = new JObject();
             foreach (var serBone in serBones)
             {
-                root.Add(JObject.FromObject(serBone, DefaultIgnoreSerializer));
+                root.Add(JObject.FromObject(serBone, DefaultSerializer));
             }
             return root;
         }
@@ -120,30 +121,33 @@ namespace SpineModelExtractor
 
         public static JToken SerializeAnimationBones(SerAnimationBone[] serAnimationBones)
         {
-            var root = new JArray();
-            var rootDict = new Dictionary<string, JProperty>();
+            //var root = new JObject();
+            var rootDict = new Dictionary<string, JObject>();
             foreach (var serAnimationBone in serAnimationBones)
             {
                 var props = new Dictionary<string, JArray>();
-                if (serAnimationBone.Rotates != null)
+                if (serAnimationBone.Rotate != null)
                 {
-                    props.Add("rotate", new JArray(serAnimationBone.Rotates));
+                    props.Add("rotate", JArray.FromObject(serAnimationBone.Rotate.Frames, DefaultSerializer));
                 }
-                if (serAnimationBone.Scales != null)
+                if (serAnimationBone.Scale != null)
                 {
-                    props.Add("scale", new JArray(serAnimationBone.Scales));
+                    props.Add("scale", JArray.FromObject(serAnimationBone.Scale.Frames, DefaultSerializer));
                 }
-                if (serAnimationBone.Shears != null)
+                if (serAnimationBone.Shear != null)
                 {
-                    props.Add("shear", new JArray(serAnimationBone.Shears));
+                    props.Add("shear", JArray.FromObject(serAnimationBone.Shear.Frames, DefaultSerializer));
                 }
-                if (serAnimationBone.Translates != null)
+                if (serAnimationBone.Translate != null)
                 {
-                    props.Add("translate", new JArray(serAnimationBone.Translates));
+                    props.Add("translate", JArray.FromObject(serAnimationBone.Translate.Frames, DefaultSerializer));
                 }
+                rootDict.Add(serAnimationBone.Name, JObject.FromObject(props));
             }
 
-            return root;
+            Console.WriteLine(JsonConvert.SerializeObject(rootDict, Formatting.Indented, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore}));
+
+            return JObject.FromObject(rootDict, DefaultSerializer);
         }
         #region SerializeSkin private sub functions
 
@@ -163,7 +167,7 @@ namespace SpineModelExtractor
             var root = new JObject();
             foreach (var attachment in attachments)
             {
-                root.Add(new JProperty(attachment.Name, JObject.FromObject(attachment, DefaultIgnoreSerializer)));
+                root.Add(new JProperty(attachment.Name, JObject.FromObject(attachment, DefaultSerializer)));
             }
 
             return root;

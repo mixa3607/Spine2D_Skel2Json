@@ -8,13 +8,13 @@ namespace SpineModelExtractor.AdditionalClasses
 
     public class SerAnimationBone : ContainName
     {
-        public SerAnimBoneRotate[] Rotates { get; set; }
+        public SerAnimBoneRotate Rotate { get; set; }
 
-        public SerAnimBoneTranslate[] Translates { get; set; }
+        public SerAnimBoneTranslate Translate { get; set; }
 
-        public SerAnimBoneScale[] Scales { get; set; }
+        public SerAnimBoneScale Scale { get; set; }
 
-        public SerAnimBoneShear[] Shears { get; set; }
+        public SerAnimBoneShear Shear { get; set; }
     }
 
     //name: rotate
@@ -61,9 +61,31 @@ namespace SpineModelExtractor.AdditionalClasses
         [DefaultValue(null)]
         public float Angle { get; set; }
 
-        [JsonProperty("curve")]
-        [DefaultValue(null)]
+        //[JsonProperty("curve")]
+        //[DefaultValue(null)]
+        [JsonIgnore]
         public float[] Curve { get; set; }
+
+
+        [JsonProperty("curve")]
+        public object CurveF
+        {
+            get
+            {
+                if (Curve != null)
+                {
+                    return Curve;
+                }
+                else if (IsStepped == true)
+                {
+                    return "stepped";
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         [JsonIgnore]
         [DefaultValue(null)]
