@@ -297,15 +297,6 @@ namespace SpineModelExtractor
                                 .Where(s => s.Key == spineRotate.BoneIndex)
                                 .Select(s => s.Value)
                                 .FirstOrDefault();
-                            //if (spineRotate.RawCurve.ContainsKey(spineRotate.BoneIndex))
-                            //{
-                            //    frames[i].Curve = spineRotate.RawCurve[spineRotate.BoneIndex];
-                            //}
-
-                            //if (spineRotate.IsStepped.ContainsKey(spineRotate.BoneIndex))
-                            //{
-                            //    frames[i].IsStepped = spineRotate.IsStepped[spineRotate.BoneIndex];
-                            //}
                         }
                         AddOrInsert(boneRotateDict, new SerAnimBoneRotate(){Frames = frames}, spineRotate.BoneIndex);
                     }

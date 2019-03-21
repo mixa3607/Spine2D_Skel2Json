@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.IO.Pipes;
+using System.Linq;
+using System.Net.NetworkInformation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SpineModelExtractor.AdditionalClasses;
@@ -95,7 +98,53 @@ namespace SpineModelExtractor
             return root;
         }
 
+        public static JObject SerializeAnimations(SerAnimation[] serAnimations)
+        {
+            var root = new JObject();
+            foreach (var serAnimation in serAnimations)
+            {
+                root.Add(new JProperty(serAnimation.Name, SerializeAnimation(serAnimation)));
+            }
 
+            return root;
+        }
+
+        public static JToken SerializeAnimation(SerAnimation serAnimation)
+        {
+            var root = new JObject();
+            var mainDict = new Dictionary<string, JToken>();
+            mainDict.Add("bones", SerializeAnimationBones(serAnimation.Bones));
+
+            return root;
+        }
+
+        public static JToken SerializeAnimationBones(SerAnimationBone[] serAnimationBones)
+        {
+            var root = new JArray();
+            var rootDict = new Dictionary<string, JProperty>();
+            foreach (var serAnimationBone in serAnimationBones)
+            {
+                var props = new Dictionary<string, JArray>();
+                if (serAnimationBone.Rotates != null)
+                {
+                    props.Add("rotate", new JArray(serAnimationBone.Rotates));
+                }
+                if (serAnimationBone.Scales != null)
+                {
+                    props.Add("scale", new JArray(serAnimationBone.Scales));
+                }
+                if (serAnimationBone.Shears != null)
+                {
+                    props.Add("shear", new JArray(serAnimationBone.Shears));
+                }
+                if (serAnimationBone.Translates != null)
+                {
+                    props.Add("translate", new JArray(serAnimationBone.Translates));
+                }
+            }
+
+            return root;
+        }
         #region SerializeSkin private sub functions
 
         private static JToken SerializeSkinSlots(SerSkinSlot[] slots)

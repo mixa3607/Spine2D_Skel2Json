@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Spine;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SpineModelExtractor.AdditionalClasses;
 
 
@@ -25,7 +27,7 @@ namespace SpineModelExtractor
             
             //animations section
             var serAnimations = parser.GetAnimations();
-
+            SkelSerializer.SerializeAnimations(serAnimations);
             //skeleton section
             var serSkeleton = parser.GetSkeleton();
 
@@ -38,19 +40,15 @@ namespace SpineModelExtractor
             
             //skins section
             var serSkins = parser.GetSkins();
-            var json = JsonConvert.SerializeObject(SkelSerializer.SerializeSkins(serSkins), Formatting.Indented, new JsonSerializerSettings() {DefaultValueHandling = DefaultValueHandling.Ignore});
-            //SkelSerializer.SerializeSlots(serSlots).ToString();
-            //var jsonObj = new JObject();
-            //jsonObj.Add(new JProperty("skeleton", 
-            //    new JArray(
-            //        new JProperty("hash", ""), 
-            //        new JProperty("spine", ""), 
-            //        new JProperty("width", ""), 
-            //        new JProperty("height", ""), 
-            //        new JProperty("images", "")
-            //    )));
+            //var json = JsonConvert.SerializeObject(SkelSerializer.SerializeSkins(serSkins), Formatting.Indented, new JsonSerializerSettings() {DefaultValueHandling = DefaultValueHandling.Ignore});
+            SkelSerializer.SerializeSlots(serSlots).ToString();
+            var jsonObj = new JProperty("test", JObject.FromObject(new Dictionary<string, string>
+            {
+                { "123", "123"}
+            }));
+            
 
-            //Console.WriteLine(jsonObj.ToString());
+            Console.WriteLine(jsonObj.ToString());
         }
 
         
