@@ -120,7 +120,7 @@ namespace SpineModelExtractor
                                 Parser.FloatColorToHexString(mesh.G) +
                                 Parser.FloatColorToHexString(mesh.B) +
                                 Parser.FloatColorToHexString(mesh.A),
-                        Deform = mesh.InheritDeform,
+                        Deform = true,///!!!
                         Edges = mesh.Edges,
                         Height = mesh.RegionOriginalHeight,
                         Width = mesh.RegionOriginalWidth,
@@ -133,6 +133,10 @@ namespace SpineModelExtractor
                         Type = "mesh",
                         UVs = mesh.RegionUVs
                     };
+                    if (mesh.ParentMesh != null)
+                    {
+                        serMesh.Deform = mesh.InheritDeform;
+                    }
                     serAttachment = serMesh;
                 }
                 //case region

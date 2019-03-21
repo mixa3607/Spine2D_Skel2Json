@@ -12,16 +12,9 @@ namespace SpineModelExtractor
 
     class Program
     {
+        private static readonly JsonSerializer DefaultSerializer = JsonSerializer.Create(new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         static void Main(string[] args)
         {
-            object ts = "sdsds";
-            ts = (int)10;
-            var jsonObj = new JProperty("test", ts);
-
-
-            Console.WriteLine(jsonObj.ToString());
-
-
             bool isJsonLoad = false;
             SkeletonData skeletonData = null;
 
@@ -30,8 +23,12 @@ namespace SpineModelExtractor
             else
                 skeletonData = GetSkeletonFromSkel();
 
-           
+            var jsonData = SkelSerializer.SerializeModel(skeletonData);
+            var text = JsonConvert.SerializeObject(jsonData, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
+            File.WriteAllText("test.json", text);
+
             var parser = new Parser(skeletonData);
+            
             
             //animations section
             var serAnimations = parser.GetAnimations();
@@ -59,8 +56,8 @@ namespace SpineModelExtractor
 
         static SkeletonData GetSkeletonFromSkel()
         {
-            string folder = "models/hero/export/";
-            string files = folder + "hero";
+            string folder = "models/coin/export/";
+            string files = folder + "coin";
             string skelFile = files + "-pro.skel";
             string atlasFile = files + ".atlas";
             string jsonFile = files + "-pro.json";
