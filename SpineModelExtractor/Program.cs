@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Spine;
 using System.IO;
 using Newtonsoft.Json;
@@ -10,11 +11,20 @@ using SpineModelExtractor.AdditionalClasses;
 namespace SpineModelExtractor
 {
 
+
+
+    
+
     class Program
     {
-        private static readonly JsonSerializer DefaultSerializer = JsonSerializer.Create(new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
+
+        //private static readonly JsonSerializer DefaultSerializer = JsonSerializer.Create(new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         static void Main(string[] args)
         {
+
+            //var json = JsonConvert.SerializeObject(new JProperty("test", (float)0.5450232), Formatting.Indented, );
+
+
             bool isJsonLoad = false;
             SkeletonData skeletonData = null;
 
@@ -25,13 +35,15 @@ namespace SpineModelExtractor
 
             var jsonData = SkelSerializer.SerializeModel(skeletonData);
             var text = JsonConvert.SerializeObject(jsonData, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
-            File.WriteAllText("test.json", text);
-
+            File.WriteAllText("d/duli.json", text);
+            return;
             var parser = new Parser(skeletonData);
+            
             
             
             //animations section
             var serAnimations = parser.GetAnimations();
+            SkelSerializer.SerializeAnimations(serAnimations);
             SkelSerializer.SerializeAnimations(serAnimations);
             //skeleton section
             var serSkeleton = parser.GetSkeleton();
@@ -56,9 +68,9 @@ namespace SpineModelExtractor
 
         static SkeletonData GetSkeletonFromSkel()
         {
-            string folder = "models/coin/export/";
-            string files = folder + "coin";
-            string skelFile = files + "-pro.skel";
+            string folder = "d/";
+            string files = folder + "duli";
+            string skelFile = files + ".skel";
             string atlasFile = files + ".atlas";
             string jsonFile = files + "-pro.json";
 

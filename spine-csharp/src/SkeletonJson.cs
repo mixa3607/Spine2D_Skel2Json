@@ -443,7 +443,7 @@ namespace Spine {
 			if (verticesLength == vertices.Length) {
 				if (scale != 1) {
 					for (int i = 0; i < vertices.Length; i++) {
-						vertices[i] *= scale;
+						//vertices[i] *= scale;!!
 					}
 				}
 				attachment.vertices = vertices;
@@ -462,7 +462,7 @@ namespace Spine {
 				}
 			}
 			attachment.bones = bones.ToArray();
-			attachment.vertices = weights.ToArray();
+            attachment.vertices = vertices;//weights.ToArray();
 		}
 
 		private void ReadAnimation (Dictionary<string, Object> map, string name, SkeletonData skeletonData) {

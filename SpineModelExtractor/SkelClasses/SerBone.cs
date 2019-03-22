@@ -10,49 +10,49 @@ namespace SpineModelExtractor.SkelClasses
     //}
     public class SerBone
     {
-        [JsonProperty("name")]
+        [JsonProperty(PropertyName = "name", Order = 1)]
         public string Name { get; set; }
 
-        [JsonProperty("parent")]
+        [JsonProperty(PropertyName = "parent", Order = 2)]
         public string Parent { get; set; }
 
-        [JsonProperty("y")]
+        [JsonProperty(PropertyName = "y", Order = 5)]
         [DefaultValue(0.0)]
         public float Y { get; set; }
 
-        [JsonProperty("x")]
-        [DefaultValue(0.0)]
+        [JsonProperty(PropertyName = "x", Order = 6)]
+        [DefaultValue((float)0.0)]
         public float X { get; set; }
 
-        [JsonProperty("color")] //not used
+        [JsonProperty(PropertyName = "color", Order = 20)] //not used
         [DefaultValue(null)]
         public string Color { get; set; }
 
-        [JsonProperty("scaleX")]
+        [JsonProperty(PropertyName = "scaleX", Order = 9)]
         [DefaultValue(1.0)]
         public float ScaleX { get; set; }
 
-        [JsonProperty("scaleY")]
+        [JsonProperty(PropertyName = "scaleY", Order = 10)]
         [DefaultValue(1.0)]
         public float ScaleY { get; set; }
 
-        [JsonProperty("shearX")]
+        [JsonProperty(PropertyName = "shearX", Order = 7)]
         [DefaultValue(0.0)]
         public float ShearX { get; set; }
 
-        [JsonProperty("shearY")]
+        [JsonProperty(PropertyName = "shearY", Order = 8)]
         [DefaultValue(0.0)]
         public float ShearY { get; set; }
 
-        [JsonProperty("rotation")]
+        [JsonProperty(PropertyName = "rotation", Order = 4)]
         [DefaultValue(0.0)]
         public float Rotation { get; set; }
 
-        [JsonProperty("transform")]
+        [JsonProperty(PropertyName = "transform", Order = 11)]
         [DefaultValue("Normal")]
         public string Transform { get; set; }
 
-        [JsonProperty("length")]
+        [JsonProperty(PropertyName = "length", Order = 3)]
         [DefaultValue(0.0)]
         public float Length { get; set; }
     }

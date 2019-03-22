@@ -7,13 +7,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Spine;
 using SpineModelExtractor.AdditionalClasses;
+using SpineModelExtractor.AdditionalClasses.JsonDefaults;
 using SpineModelExtractor.SkelClasses;
 
 namespace SpineModelExtractor
 {
     class SkelSerializer
     {
-        private static readonly JsonSerializer DefaultSerializer = JsonSerializer.Create(new JsonSerializerSettings() {DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
+        //private static readonly JsonSerializer DefaultSerializer = JsonSerializer.Create(new JsonSerializerSettings() {DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore });
         
         //not used code
         public static JToken Serialize(object serObject, string propName)
@@ -69,9 +70,45 @@ namespace SpineModelExtractor
             rootDict.Add("skeleton", SerializeSkeleton(parser.GetSkeleton()));
             rootDict.Add("bones", SerializeBones(parser.GetBones()));
             rootDict.Add("slots", SerializeSlots(parser.GetSlots()));
+            var iks = parser.GetIKs();
+            if (iks.Length != 0)
+            {
+                rootDict.Add("ik", SerializeIKs(iks));
+            }
             rootDict.Add("skins", SerializeSkins(parser.GetSkins()));
+            var events = parser.GetEvents();
+            if (events.Length != 0)
+            {
+                rootDict.Add("events", SerializeEvents(events));
+            }
             rootDict.Add("animations", SerializeAnimations(parser.GetAnimations()));
-            return JObject.FromObject(rootDict, DefaultSerializer);
+            
+
+            
+
+            return JObject.FromObject(rootDict, DefaultJson.DefaultSerializer);
+        }
+
+        public static JToken SerializeIKs(SerIK[] serIks)
+        {
+            var rootArr = new JArray();
+            foreach (var serIk in serIks)
+            {
+                rootArr.Add(JObject.FromObject(serIk));
+            }
+
+            return rootArr;
+        }
+
+        public static JToken SerializeEvents(SerEvent[] serEvents)
+        {
+            var rootDict = new Dictionary<string, JToken>();
+            foreach (var serEvent in serEvents)
+            {
+                rootDict.Add(serEvent.Name, JObject.FromObject(serEvent, DefaultJson.DefaultSerializer));
+            }
+
+            return JObject.FromObject(rootDict, DefaultJson.DefaultSerializer);
         }
 
         public static JObject SerializeSkeleton(SerSkeleton serSkeleton)
@@ -85,7 +122,7 @@ namespace SpineModelExtractor
             var root = new JArray();
             foreach (var serSlot in serSlots)
             {
-                root.Add(JObject.FromObject(serSlot, DefaultSerializer));
+                root.Add(JObject.FromObject(serSlot, DefaultJson.DefaultSerializer));
             }
             return root;
         }
@@ -95,7 +132,7 @@ namespace SpineModelExtractor
             var root = new JArray();
             foreach (var serBone in serBones)
             {
-                root.Add(JObject.FromObject(serBone, DefaultSerializer));
+                root.Add(JObject.FromObject(serBone, DefaultJson.DefaultSerializer));
             }
             return root;
         }
@@ -129,10 +166,10 @@ namespace SpineModelExtractor
             var mainDict = new Dictionary<string, JToken>
             {
                 {"bones", SerializeAnimationBones(serAnimation.Bones)},
-                {"deforms", SerializeAnimationDeforms(serAnimation.Deforms)},
+                {"deform", SerializeAnimationDeforms(serAnimation.Deforms)},
                 {"slots", SerializeAnimationSlots(serAnimation.Slots)}
             };
-            return JObject.FromObject(mainDict, DefaultSerializer);
+            return JObject.FromObject(mainDict, DefaultJson.DefaultSerializer);
         }
 
         public static JToken SerializeAnimationSlots(SerAnimationSlot[] serAnimationSlots)
@@ -144,18 +181,18 @@ namespace SpineModelExtractor
                 var props = new Dictionary<string, JToken>();
                 if (slot.Attachments != null)
                 {
-                    props.Add("attachment", JArray.FromObject(slot.Attachments[0].Frames, DefaultSerializer));
+                    props.Add("attachment", JArray.FromObject(slot.Attachments[0].Frames, DefaultJson.DefaultSerializer));
                 }
                 if (slot.Colors != null)
                 {
-                    props.Add("color", JArray.FromObject(slot.Colors[0].Frames, DefaultSerializer));
+                    props.Add("color", JArray.FromObject(slot.Colors[0].Frames, DefaultJson.DefaultSerializer));
                 }
                 if (slot.TwoColors != null)
                 {
-                    props.Add("twocolor", JArray.FromObject(slot.TwoColors, DefaultSerializer));
+                    props.Add("twocolor", JArray.FromObject(slot.TwoColors, DefaultJson.DefaultSerializer));
                 }
 
-                rootDict.Add(slot.Name, JObject.FromObject(props, DefaultSerializer));
+                rootDict.Add(slot.Name, JObject.FromObject(props, DefaultJson.DefaultSerializer));
             }
 
             Console.WriteLine(JsonConvert.SerializeObject(rootDict, Formatting.Indented, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore }));
@@ -172,15 +209,15 @@ namespace SpineModelExtractor
                 var slots = new Dictionary<string, JArray>();
                 foreach (var slot in serAnimationDeform.Slots)
                 {
-                    slots.Add(slot.Name, JArray.FromObject(slot.Frames, DefaultSerializer));
+                    slots.Add(slot.Name, JArray.FromObject(slot.Frames, DefaultJson.DefaultSerializer));
                 }
-                deforms.Add(serAnimationDeform.Name, JObject.FromObject(slots, DefaultSerializer));
+                deforms.Add(serAnimationDeform.Name, JObject.FromObject(slots, DefaultJson.DefaultSerializer));
             }
-            rootDict.Add("default", JObject.FromObject(deforms, DefaultSerializer));
+            rootDict.Add("default", JObject.FromObject(deforms, DefaultJson.DefaultSerializer));
 
             //Console.WriteLine(JsonConvert.SerializeObject(rootDict, Formatting.Indented, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore }));
 
-            return JObject.FromObject(rootDict, DefaultSerializer);
+            return JObject.FromObject(rootDict, DefaultJson.DefaultSerializer);
         }
 
         public static JToken SerializeAnimationBones(SerAnimationBone[] serAnimationBones)
@@ -192,26 +229,26 @@ namespace SpineModelExtractor
                 var props = new Dictionary<string, JArray>();
                 if (serAnimationBone.Rotate != null)
                 {
-                    props.Add("rotate", JArray.FromObject(serAnimationBone.Rotate.Frames, DefaultSerializer));
+                    props.Add("rotate", JArray.FromObject(serAnimationBone.Rotate.Frames, DefaultJson.DefaultSerializer));
                 }
                 if (serAnimationBone.Scale != null)
                 {
-                    props.Add("scale", JArray.FromObject(serAnimationBone.Scale.Frames, DefaultSerializer));
+                    props.Add("scale", JArray.FromObject(serAnimationBone.Scale.Frames, DefaultJson.DefaultSerializer));
                 }
                 if (serAnimationBone.Shear != null)
                 {
-                    props.Add("shear", JArray.FromObject(serAnimationBone.Shear.Frames, DefaultSerializer));
+                    props.Add("shear", JArray.FromObject(serAnimationBone.Shear.Frames, DefaultJson.DefaultSerializer));
                 }
                 if (serAnimationBone.Translate != null)
                 {
-                    props.Add("translate", JArray.FromObject(serAnimationBone.Translate.Frames, DefaultSerializer));
+                    props.Add("translate", JArray.FromObject(serAnimationBone.Translate.Frames, DefaultJson.DefaultSerializer));
                 }
                 rootDict.Add(serAnimationBone.Name, JObject.FromObject(props));
             }
 
             //Console.WriteLine(JsonConvert.SerializeObject(rootDict, Formatting.Indented, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore}));
 
-            return JObject.FromObject(rootDict, DefaultSerializer);
+            return JObject.FromObject(rootDict, DefaultJson.DefaultSerializer);
         }
         #region SerializeSkin private sub functions
 
@@ -231,7 +268,7 @@ namespace SpineModelExtractor
             var root = new JObject();
             foreach (var attachment in attachments)
             {
-                root.Add(new JProperty(attachment.Name, JObject.FromObject(attachment, DefaultSerializer)));
+                root.Add(new JProperty(attachment.Name, JObject.FromObject(attachment, DefaultJson.DefaultSerializer)));
             }
 
             return root;

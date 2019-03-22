@@ -45,7 +45,8 @@ namespace SpineModelExtractor
                     ShearY = bone.ShearY,
                     X = bone.X,
                     Y = bone.Y,
-                    Transform = bone.TransformMode.ToString()
+                    Transform = Char.ToLowerInvariant(bone.TransformMode.ToString()[0]) + bone.TransformMode.ToString().Substring(1),
+                    Length = bone.Length
                 };
             }
 
@@ -63,7 +64,7 @@ namespace SpineModelExtractor
                     Name = slot.Name,
                     Bone = slot.BoneData.Name,
                     Attachment = slot.AttachmentName,
-                    Blend = slot.BlendMode.ToString(),
+                    Blend = slot.BlendMode.ToString().ToLower(),
                     Color = FloatColorToHexString(slot.R) +
                             FloatColorToHexString(slot.G) +
                             FloatColorToHexString(slot.B) +
@@ -120,7 +121,6 @@ namespace SpineModelExtractor
                                 Parser.FloatColorToHexString(mesh.G) +
                                 Parser.FloatColorToHexString(mesh.B) +
                                 Parser.FloatColorToHexString(mesh.A),
-                        Deform = true,///!!!
                         Edges = mesh.Edges,
                         Height = mesh.RegionOriginalHeight,
                         Width = mesh.RegionOriginalWidth,
@@ -129,7 +129,7 @@ namespace SpineModelExtractor
                         Parent = mesh.ParentMesh?.Name,
                         Skin = null,
                         Triangles = mesh.Triangles,
-                        Vertices = mesh.Vertices,
+                        Vertices = mesh.Vertices,///###!!!
                         Type = "mesh",
                         UVs = mesh.RegionUVs
                     };
@@ -219,11 +219,48 @@ namespace SpineModelExtractor
                 };
             }
 
-            return serSkinSlots;
+            return serSkinSlots.OrderBy(s=>s.Name).ToArray();
         }
 
         #endregion
 
+        public SerIK[] GetIKs()
+        {
+            var iksList = new List<SerIK>();
+            foreach (var spineIkConstraint in skeletonData.IkConstraints)
+            {
+                var serIk = new SerIK
+                {
+                    BendPositive = spineIkConstraint.BendDirection == 1,
+                    Name = spineIkConstraint.Name,
+                    Mix = spineIkConstraint.Mix,
+                    Order = spineIkConstraint.Order,
+                    Target = spineIkConstraint.Target.Name,
+                    Bones = spineIkConstraint.Bones.Select(b => b.Name).ToArray()
+                };
+                iksList.Add(serIk);
+            }
+
+            return iksList.ToArray();
+        }
+
+        public SerEvent[] GetEvents()
+        {
+            var eventsDict = new List<SerEvent>();
+            foreach (var spineEvent in skeletonData.Events)
+            {
+                var serEvent = new SerEvent
+                {
+                    Float = spineEvent.Float,
+                    Int = spineEvent.Int,
+                    String = spineEvent.String,
+                    Name = spineEvent.Name
+                };
+                eventsDict.Add(serEvent);
+            }
+
+            return eventsDict.ToArray();
+        }
 
         public SerAnimation[] GetAnimations()
         {
@@ -248,7 +285,7 @@ namespace SpineModelExtractor
                 var deformList = new List<SerAnimationDeform>();
                 var deformsDict = new Dictionary<int, List<SerAnimDeformSlot>>();
 
-                //for IKs *need optimization
+                
 
                 foreach (var animationTimeline in spineAnimation.Timelines)
                 {
@@ -365,14 +402,7 @@ namespace SpineModelExtractor
                             
                         }
                     }
-                    ///////////NOT TESTED////////
-                    //IKs
-
-                    //transforms
-
-                    //paths
-
-                    //events
+                    
                 }
 
 

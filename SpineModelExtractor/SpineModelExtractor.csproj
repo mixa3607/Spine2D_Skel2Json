@@ -46,15 +46,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdditionalClasses\SerAnimationBone.cs" />
-    <Compile Include="AdditionalClasses\SerAnimationDeform.cs" />
-    <Compile Include="AdditionalClasses\SerAnimationSlot.cs" />
+    <Compile Include="AdditionalClasses\AnimationSubclasses\SerAnimationBone.cs" />
+    <Compile Include="AdditionalClasses\AnimationSubclasses\SerAnimationDeform.cs" />
+    <Compile Include="AdditionalClasses\AnimationSubclasses\SerAnimationSlot.cs" />
+    <Compile Include="AdditionalClasses\JsonDefaults\DefaultJson.cs" />
+    <Compile Include="AdditionalClasses\JsonDefaults\FloatConverter.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AdditionalClasses\SerAttachment.cs" />
     <Compile Include="SkelClasses\SerAnimation.cs" />
     <Compile Include="SkelClasses\SerBone.cs" />
+    <Compile Include="SkelClasses\SerEvent.cs" />
+    <Compile Include="SkelClasses\SerIK.cs" />
     <Compile Include="SkelClasses\SerSkin.cs" />
     <Compile Include="SkelClasses\SerSkeleton.cs" />
     <Compile Include="SkelClasses\SerSlot.cs" />

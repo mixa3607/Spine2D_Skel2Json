@@ -30,7 +30,7 @@ namespace SpineModelExtractor.SkelClasses
         public string Dark { get; set; }
 
         [JsonProperty("blend")]
-        [DefaultValue("Normal")]
+        [DefaultValue("normal")]
         public string Blend { get; set; }
     }
 }

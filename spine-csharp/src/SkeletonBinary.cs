@@ -491,18 +491,32 @@ namespace Spine {
 			}
 			var weights = new ExposedList<float>(verticesLength * 3 * 3);
 			var bonesArray = new ExposedList<int>(verticesLength * 3);
+
+            var rawVertices = new List<float>();
 			for (int i = 0; i < vertexCount; i++) {
 				int boneCount = ReadVarint(input, true);
+                rawVertices.Add(boneCount); ///###
 				bonesArray.Add(boneCount);
 				for (int ii = 0; ii < boneCount; ii++) {
-					bonesArray.Add(ReadVarint(input, true));
-					weights.Add(ReadFloat(input) * scale);
-					weights.Add(ReadFloat(input) * scale);
-					weights.Add(ReadFloat(input));
-				}
+                    var intBuff = ReadVarint(input, true);
+					bonesArray.Add(intBuff);
+                    rawVertices.Add(intBuff);
+
+                    var floatBuff = ReadFloat(input);
+                    weights.Add(floatBuff * scale);
+                    rawVertices.Add(floatBuff);
+
+                    floatBuff = ReadFloat(input);
+                    weights.Add(floatBuff * scale);
+                    rawVertices.Add(floatBuff);
+
+                    floatBuff = ReadFloat(input);
+                    weights.Add(floatBuff);
+                    rawVertices.Add(floatBuff);
+                }
 			}
 
-			vertices.vertices = weights.ToArray();
+            vertices.vertices = rawVertices.ToArray();//weights.ToArray();
 			vertices.bones = bonesArray.ToArray();
 			return vertices;
 		}
@@ -734,7 +748,7 @@ namespace Spine {
 								deform = new float[deformLength];
 								int start = ReadVarint(input, true);
 
-                                RawVertices = new float[deformLength - start]; ///###
+                                RawVertices = new float[end]; ///###
                                 timeline.RawOffset.Add(frameIndex, start); ///###
 
 								end += start;

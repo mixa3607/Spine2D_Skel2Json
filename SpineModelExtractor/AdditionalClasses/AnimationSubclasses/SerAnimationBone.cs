@@ -94,9 +94,29 @@ namespace SpineModelExtractor.AdditionalClasses
 
     public class SerAnimBoneFrame : SerTimeLineMember
     {
-        [JsonProperty("curve")]
+        [JsonIgnore]
         [DefaultValue(null)]
         public float[] Curve { get; set; }
+
+        [JsonProperty("curve")]
+        public object CurveF
+        {
+            get
+            {
+                if (Curve != null)
+                {
+                    return Curve;
+                }
+                else if (IsStepped == true)
+                {
+                    return "stepped";
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         [JsonProperty("x")]
         [DefaultValue(null)]
